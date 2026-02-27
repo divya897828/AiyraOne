@@ -21,6 +21,8 @@ export function LoginPage({ onNavigate }: LoginPageProps) {
     // Handle login logic here
   };
 
+  
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Image with Welcome Message */}

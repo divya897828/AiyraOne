@@ -168,7 +168,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
             <div className="flex items-center gap-4">
               <Button
                 onClick={() => {
-                  onNavigate('login');
+                  window.open('https://app.aiyraone.com/login', '_blank');
                   setIsProductsMenuOpen(false);
                 }}
                 className="hidden sm:flex bg-white hover:bg-slate-50 text-sky-700 border-2 border-sky-600 shadow-lg font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
@@ -370,7 +370,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
               <div className="space-y-3">
                 <Button
                   onClick={() => {
-                    onNavigate('login');
+                    window.open('https://app.aiyraone.com/login', '_blank');
                     setIsMobileMenuOpen(false);
                   }}
                   className="w-full bg-white hover:bg-slate-50 text-sky-700 border-2 border-sky-600 shadow-lg font-bold py-4 rounded-xl transition-all duration-300"
