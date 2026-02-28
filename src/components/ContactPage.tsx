@@ -71,10 +71,10 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
     setFormData({...formData, phone: formatted});
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate phone number if provided (it's optional in contact form)
+    // 1. Validate phone number if provided
     if (formData.phone) {
       const phoneDigits = formData.phone.replace(/\D/g, '');
       if (phoneDigits.length !== 10) {
@@ -88,14 +88,43 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
       }
     }
     
-    // Here you would typically send the form data to your backend
-    setModalState({
-      isOpen: true,
-      title: 'Message Sent',
-      message: 'Thank you for your message! We\'ll get back to you within 24 hours.',
-      icon: <CheckCircle className="w-6 h-6 text-green-500" />
-    });
+    // 2. Send data to Formspree
+    try {
+      const response = await fetch("https://formspree.io/f/mykdagoz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // If Formspree returns a success status (200-299)
+      if (response.ok) {
+        setModalState({
+          isOpen: true,
+          title: 'Message Sent',
+          message: 'Thank you for your message! We\'ll get back to you within 24 hours.',
+          icon: <CheckCircle className="w-6 h-6 text-green-500" />
+        });
+        // Clear the form fields
+        setFormData({
+          name: '', email: '', phone: '', company: '', 
+          subject: '', message: '', inquiryType: ''
+        });
+      } else {
+        throw new Error("Form submission failed");
+      }
+    } catch (error) {
+      setModalState({
+        isOpen: true,
+        title: 'Submission Error',
+        message: 'There was a problem sending your message. Please try again.',
+        icon: <AlertCircle className="w-6 h-6 text-red-500" />
+      });
+    }
   };
+
 
   const contactMethods = [
     {

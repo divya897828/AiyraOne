@@ -55,10 +55,10 @@ export function DemoPage({ onNavigate }: DemoPageProps) {
     setFormData({...formData, phone: formatted});
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate phone number has exactly 10 digits
+    // 1. Phone validation (Keep your existing logic)
     const phoneDigits = formData.phone.replace(/\D/g, '');
     if (phoneDigits.length !== 10) {
       setModalState({
@@ -69,15 +69,43 @@ export function DemoPage({ onNavigate }: DemoPageProps) {
       });
       return;
     }
-    
-    // Here you would typically send the form data to your backend
+try {
+  const response = await fetch("https://formspree.io/f/mykdagoz", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify(formData),
+  });
+
+  // CHECK THIS LINE: If response.ok is true (status 200-299), it worked!
+  if (response.ok) {
     setModalState({
       isOpen: true,
       title: 'Thank You!',
-      message: 'We\'ll contact you shortly to schedule your demo.',
+      message: 'We\'ve received your request and will contact you shortly.',
       icon: <CheckCircle className="w-6 h-6 text-green-500" />
     });
+    // Clear form
+    setFormData({ name: '', email: '', phone: '', company: '', properties: '', currentSystem: '', challenges: '', demoDate: '', demoTime: '' });
+  } else {
+    // This runs if Formspree returns an error code (like 404 or 403)
+    throw new Error("Server rejected the submission");
+  }
+} catch (error) {
+  // This runs if there's a network error OR if your code above crashed
+  setModalState({
+    isOpen: true,
+    title: 'Submission Error',
+    message: 'There was a problem. Please check your internet and try again.',
+    icon: <AlertCircle className="w-6 h-6 text-red-500" />
+  });
+}
+
   };
+
+
 
   const benefits = [
     {
